@@ -467,12 +467,13 @@ const Home = () => {
                       }}
                     >
 
-                      <option value="gm">
-                        Gram (gm)
-                      </option>
 
                       <option value="piece">
                         Piece
+                      </option>
+
+                      <option value="gm">
+                        Gram (gm)
                       </option>
 
                       <option value="ml">
