@@ -1,10 +1,17 @@
-import { Routes, Route, Link } from "react-router-dom"
+
+
+import { Routes, Route, Link, Navigate } from "react-router-dom"
+
 import Home from "./pages/Home"
 import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 import About from "./pages/About"
+import Signup from "./pages/Signup"
+import ProtectedRoute from "./pages/ProtectedRoute"
+import Profile from "./pages/Profile"
 
 function App() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn")
   return (
     <div style={{ display: "flex", minHeight: "100vh", fontFamily: "Arial, sans-serif", background: "#f8fafc" }}>
 
@@ -20,21 +27,85 @@ function App() {
           <h3 style={{ marginTop: "10px", color: "#16a34a" }}>AI Nutrition</h3>
         </div>
 
-        <SidebarLink to="/" text="Home" />
-        <SidebarLink to="/dashboard" text="Dashboard" />
-        <SidebarLink to="/login" text="Login" />
-        <SidebarLink to="/about" text="About" />
+        {isLoggedIn ? (
+  <>
+    <SidebarLink to="/" text="Home" />
+    <SidebarLink to="/dashboard" text="Dashboard" />
+    <SidebarLink to="/profile" text="Profile" />
+    <SidebarLink to="/about" text="About" />
+
+    <button
+      onClick={() => {
+        localStorage.removeItem("isLoggedIn")
+        window.location.href = "/login"
+      }}
+      style={{
+        marginTop: "20px",
+        padding: "10px 16px",
+        border: "none",
+        borderRadius: "10px",
+        background: "#ef4444",
+        color: "#fff",
+        cursor: "pointer"
+      }}
+    >
+      Logout
+    </button>
+  </>
+) : (
+  <>
+    <SidebarLink to="/login" text="Login" />
+    <SidebarLink to="/signup" text="Signup" />
+  </>
+)}
       </div>
+
 
       {/* Main */}
       <div style={{ flex: 1, padding: "40px" }}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
+          <Route path="/signup" element={<Signup />} />
+          
+          {/* Protected Routes */}
+          <Route
+          path="/"
+          element={
+          <ProtectedRoute>
+            <Home />
+            </ProtectedRoute>
+            }
+            />
+            <Route
+            path="/dashboard"
+            element={
+            <ProtectedRoute>
+              <Dashboard />
+              </ProtectedRoute>
+              }
+              />
+              <Route
+              path="/about"
+              element={
+              <ProtectedRoute>
+                <About />
+                </ProtectedRoute>
+                }
+                />
+                {/* Redirect */}
+                <Route path="*" element={<Navigate to="/" />} />
+
+                <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
+                </Routes>
+                </div>
 
     </div>
   )
